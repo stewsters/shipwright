@@ -28,7 +28,7 @@ public class ColorPalette {
 
         output.colors = new ArrayList<>();
 
-        for (int i = 0; i < random.nextInt(2)+1; i++) {
+        for (int i = 0; i < random.nextInt(2) + 1; i++) {
 
             Color color = colors.get(random.nextInt(colors.size()));
 
@@ -36,7 +36,7 @@ public class ColorPalette {
             output.colors.add(color);
             output.colors.add(color.brighter());
 
-            if(random.nextBoolean())
+            if (random.nextBoolean())
                 Collections.shuffle(colors);
 
         }

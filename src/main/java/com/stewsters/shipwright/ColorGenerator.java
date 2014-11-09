@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * From StackOverflow
- *
+ * <p/>
  * http://stackoverflow.com/questions/43044/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette
  */
 
@@ -19,14 +19,14 @@ public class ColorGenerator {
 
     // RYB color space
     private static class RYB {
-        private static final double[] White = { 1, 1, 1 };
-        private static final double[] Red = { 1, 0, 0 };
-        private static final double[] Yellow = { 1, 1, 0 };
-        private static final double[] Blue = { 0.163, 0.373, 0.6 };
-        private static final double[] Violet = { 0.5, 0, 0.5 };
-        private static final double[] Green = { 0, 0.66, 0.2 };
-        private static final double[] Orange = { 1, 0.5, 0 };
-        private static final double[] Black = { 0.2, 0.094, 0.0 };
+        private static final double[] White = {1, 1, 1};
+        private static final double[] Red = {1, 0, 0};
+        private static final double[] Yellow = {1, 1, 0};
+        private static final double[] Blue = {0.163, 0.373, 0.6};
+        private static final double[] Violet = {0.5, 0, 0.5};
+        private static final double[] Green = {0, 0.66, 0.2};
+        private static final double[] Orange = {1, 0.5, 0};
+        private static final double[] Black = {0.2, 0.094, 0.0};
 
         public static double[] ToRgb(double r, double y, double b) {
             double[] rgb = new double[3];
@@ -57,9 +57,9 @@ public class ColorGenerator {
             int numBase = (int) Math.ceil(Math.pow(pointsCount, 1.0 / 3.0));
             int ceil = (int) Math.pow(numBase, 3.0);
             for (int i = 0; i < ceil; i++) {
-                points.add(new double[] { Math.floor(i / (double) (numBase * numBase)) / (numBase - 1.0),
+                points.add(new double[]{Math.floor(i / (double) (numBase * numBase)) / (numBase - 1.0),
                         Math.floor((i / (double) numBase) % numBase) / (numBase - 1.0),
-                        Math.floor(i % numBase) / (numBase - 1.0), });
+                        Math.floor(i % numBase) / (numBase - 1.0),});
             }
 
             return this;

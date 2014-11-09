@@ -44,7 +44,7 @@ public class OpenSimplexNoise {
 
         for (int i = 0; i < 256; i++) {
             //Since 3D has 24 gradients, simple bitmask won't work, so precompute modulo array.
-            permGradIndex3D[i] = (short)((perm[i] % (gradients3D.length / 3)) * 3);
+            permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
         }
     }
 
@@ -62,11 +62,11 @@ public class OpenSimplexNoise {
         seed = seed * 6364136223846793005l + 1442695040888963407l;
         for (int i = 255; i >= 0; i--) {
             seed = seed * 6364136223846793005l + 1442695040888963407l;
-            int r = (int)((seed + 31) % (i + 1));
+            int r = (int) ((seed + 31) % (i + 1));
             if (r < 0)
                 r += (i + 1);
             perm[i] = source[r];
-            permGradIndex3D[i] = (short)((perm[i] % (gradients3D.length / 3)) * 3);
+            permGradIndex3D[i] = (short) ((perm[i] % (gradients3D.length / 3)) * 3);
             source[r] = source[i];
         }
     }
@@ -282,7 +282,7 @@ public class OpenSimplexNoise {
                     dz_ext0 = dz_ext1 = dz0 - 1;
                 }
             } else { //(0,0,0) is not one of the closest two tetrahedral vertices.
-                byte c = (byte)(aPoint | bPoint); //Our two extra vertices are determined by the closest two.
+                byte c = (byte) (aPoint | bPoint); //Our two extra vertices are determined by the closest two.
 
                 if ((c & 0x01) == 0) {
                     xsv_ext0 = xsb;
@@ -410,7 +410,7 @@ public class OpenSimplexNoise {
                     dz_ext0 = dz_ext1 = dz0 - 3 * SQUISH_CONSTANT_3D;
                 }
             } else { //(1,1,1) is not one of the closest two tetrahedral vertices.
-                byte c = (byte)(aPoint & bPoint); //Our two extra vertices are determined by the closest two.
+                byte c = (byte) (aPoint & bPoint); //Our two extra vertices are determined by the closest two.
 
                 if ((c & 0x01) != 0) {
                     xsv_ext0 = xsb + 1;
@@ -556,7 +556,7 @@ public class OpenSimplexNoise {
                     zsv_ext0 = zsb + 1;
 
                     //Other extra point is based on the shared axis.
-                    byte c = (byte)(aPoint & bPoint);
+                    byte c = (byte) (aPoint & bPoint);
                     if ((c & 0x01) != 0) {
                         dx_ext1 = dx0 - 2 - 2 * SQUISH_CONSTANT_3D;
                         dy_ext1 = dy0 - 2 * SQUISH_CONSTANT_3D;
@@ -590,7 +590,7 @@ public class OpenSimplexNoise {
                     zsv_ext0 = zsb;
 
                     //Other extra point is based on the omitted axis.
-                    byte c = (byte)(aPoint | bPoint);
+                    byte c = (byte) (aPoint | bPoint);
                     if ((c & 0x01) == 0) {
                         dx_ext1 = dx0 + 1 - SQUISH_CONSTANT_3D;
                         dy_ext1 = dy0 - 1 - SQUISH_CONSTANT_3D;
@@ -730,16 +730,14 @@ public class OpenSimplexNoise {
 
         //First extra vertex
         double attn_ext0 = 2 - dx_ext0 * dx_ext0 - dy_ext0 * dy_ext0 - dz_ext0 * dz_ext0;
-        if (attn_ext0 > 0)
-        {
+        if (attn_ext0 > 0) {
             attn_ext0 *= attn_ext0;
             value += attn_ext0 * attn_ext0 * extrapolate(xsv_ext0, ysv_ext0, zsv_ext0, dx_ext0, dy_ext0, dz_ext0);
         }
 
         //Second extra vertex
         double attn_ext1 = 2 - dx_ext1 * dx_ext1 - dy_ext1 * dy_ext1 - dz_ext1 * dz_ext1;
-        if (attn_ext1 > 0)
-        {
+        if (attn_ext1 > 0) {
             attn_ext1 *= attn_ext1;
             value += attn_ext1 * attn_ext1 * extrapolate(xsv_ext1, ysv_ext1, zsv_ext1, dx_ext1, dy_ext1, dz_ext1);
         }
@@ -876,7 +874,7 @@ public class OpenSimplexNoise {
                     dw_ext0 = dw_ext1 = dw_ext2 = dw0 - 1;
                 }
             } else { //(0,0,0,0) is not one of the closest two pentachoron vertices.
-                byte c = (byte)(aPoint | bPoint); //Our three extra vertices are determined by the closest two.
+                byte c = (byte) (aPoint | bPoint); //Our three extra vertices are determined by the closest two.
 
                 if ((c & 0x01) == 0) {
                     xsv_ext0 = xsv_ext2 = xsb;
@@ -1069,7 +1067,7 @@ public class OpenSimplexNoise {
                     dw_ext0 = dw_ext1 = dw_ext2 = dw0 - 4 * SQUISH_CONSTANT_4D;
                 }
             } else { //(1,1,1,1) is not one of the closest two pentachoron vertices.
-                byte c = (byte)(aPoint & bPoint); //Our three extra vertices are determined by the closest two.
+                byte c = (byte) (aPoint & bPoint); //Our three extra vertices are determined by the closest two.
 
                 if ((c & 0x01) != 0) {
                     xsv_ext0 = xsv_ext2 = xsb + 1;
@@ -1282,8 +1280,8 @@ public class OpenSimplexNoise {
             //Where each of the two closest points are determines how the extra three vertices are calculated.
             if (aIsBiggerSide == bIsBiggerSide) {
                 if (aIsBiggerSide) { //Both closest points on the bigger side
-                    byte c1 = (byte)(aPoint | bPoint);
-                    byte c2 = (byte)(aPoint & bPoint);
+                    byte c1 = (byte) (aPoint | bPoint);
+                    byte c2 = (byte) (aPoint & bPoint);
                     if ((c1 & 0x01) == 0) {
                         xsv_ext0 = xsb;
                         xsv_ext1 = xsb - 1;
@@ -1363,7 +1361,7 @@ public class OpenSimplexNoise {
                     dw_ext2 = dw0;
 
                     //Other two points are based on the omitted axes.
-                    byte c = (byte)(aPoint | bPoint);
+                    byte c = (byte) (aPoint | bPoint);
 
                     if ((c & 0x01) == 0) {
                         xsv_ext0 = xsb - 1;
@@ -1378,8 +1376,7 @@ public class OpenSimplexNoise {
                     if ((c & 0x02) == 0) {
                         ysv_ext0 = ysv_ext1 = ysb;
                         dy_ext0 = dy_ext1 = dy0 - SQUISH_CONSTANT_4D;
-                        if ((c & 0x01) == 0x01)
-                        {
+                        if ((c & 0x01) == 0x01) {
                             ysv_ext0 -= 1;
                             dy_ext0 += 1;
                         } else {
@@ -1394,8 +1391,7 @@ public class OpenSimplexNoise {
                     if ((c & 0x04) == 0) {
                         zsv_ext0 = zsv_ext1 = zsb;
                         dz_ext0 = dz_ext1 = dz0 - SQUISH_CONSTANT_4D;
-                        if ((c & 0x03) == 0x03)
-                        {
+                        if ((c & 0x03) == 0x03) {
                             zsv_ext0 -= 1;
                             dz_ext0 += 1;
                         } else {
@@ -1407,8 +1403,7 @@ public class OpenSimplexNoise {
                         dz_ext0 = dz_ext1 = dz0 - 1 - SQUISH_CONSTANT_4D;
                     }
 
-                    if ((c & 0x08) == 0)
-                    {
+                    if ((c & 0x08) == 0) {
                         wsv_ext0 = wsb;
                         wsv_ext1 = wsb - 1;
                         dw_ext0 = dw0 - SQUISH_CONSTANT_4D;
@@ -1711,8 +1706,8 @@ public class OpenSimplexNoise {
             //Where each of the two closest points are determines how the extra three vertices are calculated.
             if (aIsBiggerSide == bIsBiggerSide) {
                 if (aIsBiggerSide) { //Both closest points on the bigger side
-                    byte c1 = (byte)(aPoint & bPoint);
-                    byte c2 = (byte)(aPoint | bPoint);
+                    byte c1 = (byte) (aPoint & bPoint);
+                    byte c2 = (byte) (aPoint | bPoint);
 
                     //Two contributions are permutations of (0,0,0,1) and (0,0,0,2) based on c1
                     xsv_ext0 = xsv_ext1 = xsb;
@@ -1783,7 +1778,7 @@ public class OpenSimplexNoise {
                     dw_ext2 = dw0 - 1 - 4 * SQUISH_CONSTANT_4D;
 
                     //Other two points are based on the shared axes.
-                    byte c = (byte)(aPoint & bPoint);
+                    byte c = (byte) (aPoint & bPoint);
 
                     if ((c & 0x01) != 0) {
                         xsv_ext0 = xsb + 2;
@@ -1798,8 +1793,7 @@ public class OpenSimplexNoise {
                     if ((c & 0x02) != 0) {
                         ysv_ext0 = ysv_ext1 = ysb + 1;
                         dy_ext0 = dy_ext1 = dy0 - 1 - 3 * SQUISH_CONSTANT_4D;
-                        if ((c & 0x01) == 0)
-                        {
+                        if ((c & 0x01) == 0) {
                             ysv_ext0 += 1;
                             dy_ext0 -= 1;
                         } else {
@@ -1814,8 +1808,7 @@ public class OpenSimplexNoise {
                     if ((c & 0x04) != 0) {
                         zsv_ext0 = zsv_ext1 = zsb + 1;
                         dz_ext0 = dz_ext1 = dz0 - 1 - 3 * SQUISH_CONSTANT_4D;
-                        if ((c & 0x03) == 0)
-                        {
+                        if ((c & 0x03) == 0) {
                             zsv_ext0 += 1;
                             dz_ext0 -= 1;
                         } else {
@@ -1827,8 +1820,7 @@ public class OpenSimplexNoise {
                         dz_ext0 = dz_ext1 = dz0 - 3 * SQUISH_CONSTANT_4D;
                     }
 
-                    if ((c & 0x08) != 0)
-                    {
+                    if ((c & 0x08) != 0) {
                         wsv_ext0 = wsb + 1;
                         wsv_ext1 = wsb + 2;
                         dw_ext0 = dw0 - 1 - 3 * SQUISH_CONSTANT_4D;
@@ -2036,24 +2028,21 @@ public class OpenSimplexNoise {
 
         //First extra vertex
         double attn_ext0 = 2 - dx_ext0 * dx_ext0 - dy_ext0 * dy_ext0 - dz_ext0 * dz_ext0 - dw_ext0 * dw_ext0;
-        if (attn_ext0 > 0)
-        {
+        if (attn_ext0 > 0) {
             attn_ext0 *= attn_ext0;
             value += attn_ext0 * attn_ext0 * extrapolate(xsv_ext0, ysv_ext0, zsv_ext0, wsv_ext0, dx_ext0, dy_ext0, dz_ext0, dw_ext0);
         }
 
         //Second extra vertex
         double attn_ext1 = 2 - dx_ext1 * dx_ext1 - dy_ext1 * dy_ext1 - dz_ext1 * dz_ext1 - dw_ext1 * dw_ext1;
-        if (attn_ext1 > 0)
-        {
+        if (attn_ext1 > 0) {
             attn_ext1 *= attn_ext1;
             value += attn_ext1 * attn_ext1 * extrapolate(xsv_ext1, ysv_ext1, zsv_ext1, wsv_ext1, dx_ext1, dy_ext1, dz_ext1, dw_ext1);
         }
 
         //Third extra vertex
         double attn_ext2 = 2 - dx_ext2 * dx_ext2 - dy_ext2 * dy_ext2 - dz_ext2 * dz_ext2 - dw_ext2 * dw_ext2;
-        if (attn_ext2 > 0)
-        {
+        if (attn_ext2 > 0) {
             attn_ext2 *= attn_ext2;
             value += attn_ext2 * attn_ext2 * extrapolate(xsv_ext2, ysv_ext2, zsv_ext2, wsv_ext2, dx_ext2, dy_ext2, dz_ext2, dw_ext2);
         }
@@ -2061,23 +2050,20 @@ public class OpenSimplexNoise {
         return value / NORM_CONSTANT_4D;
     }
 
-    private double extrapolate(int xsb, int ysb, double dx, double dy)
-    {
+    private double extrapolate(int xsb, int ysb, double dx, double dy) {
         int index = perm[(perm[xsb & 0xFF] + ysb) & 0xFF] & 0x0E;
         return gradients2D[index] * dx
                 + gradients2D[index + 1] * dy;
     }
 
-    private double extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz)
-    {
+    private double extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz) {
         int index = permGradIndex3D[(perm[(perm[xsb & 0xFF] + ysb) & 0xFF] + zsb) & 0xFF];
         return gradients3D[index] * dx
                 + gradients3D[index + 1] * dy
                 + gradients3D[index + 2] * dz;
     }
 
-    private double extrapolate(int xsb, int ysb, int zsb, int wsb, double dx, double dy, double dz, double dw)
-    {
+    private double extrapolate(int xsb, int ysb, int zsb, int wsb, double dx, double dy, double dz, double dw) {
         int index = perm[(perm[(perm[(perm[xsb & 0xFF] + ysb) & 0xFF] + zsb) & 0xFF] + wsb) & 0xFF] & 0xFC;
         return gradients4D[index] * dx
                 + gradients4D[index + 1] * dy
@@ -2086,54 +2072,54 @@ public class OpenSimplexNoise {
     }
 
     private static int fastFloor(double x) {
-        int xi = (int)x;
+        int xi = (int) x;
         return x < xi ? xi - 1 : xi;
     }
 
     //Gradients for 2D. They approximate the directions to the
     //vertices of an octagon from the center.
-    private static byte[] gradients2D = new byte[] {
-            5,  2,    2,  5,
-            -5,  2,   -2,  5,
-            5, -2,    2, -5,
-            -5, -2,   -2, -5,
+    private static byte[] gradients2D = new byte[]{
+            5, 2, 2, 5,
+            -5, 2, -2, 5,
+            5, -2, 2, -5,
+            -5, -2, -2, -5,
     };
 
     //Gradients for 3D. They approximate the directions to the
     //vertices of a rhombicuboctahedron from the center, skewed so
     //that the triangular and square facets can be inscribed inside
     //circles of the same radius.
-    private static byte[] gradients3D = new byte[] {
-            -11,  4,  4,     -4,  11,  4,    -4,  4,  11,
-            11,  4,  4,      4,  11,  4,     4,  4,  11,
-            -11, -4,  4,     -4, -11,  4,    -4, -4,  11,
-            11, -4,  4,      4, -11,  4,     4, -4,  11,
-            -11,  4, -4,     -4,  11, -4,    -4,  4, -11,
-            11,  4, -4,      4,  11, -4,     4,  4, -11,
-            -11, -4, -4,     -4, -11, -4,    -4, -4, -11,
-            11, -4, -4,      4, -11, -4,     4, -4, -11,
+    private static byte[] gradients3D = new byte[]{
+            -11, 4, 4, -4, 11, 4, -4, 4, 11,
+            11, 4, 4, 4, 11, 4, 4, 4, 11,
+            -11, -4, 4, -4, -11, 4, -4, -4, 11,
+            11, -4, 4, 4, -11, 4, 4, -4, 11,
+            -11, 4, -4, -4, 11, -4, -4, 4, -11,
+            11, 4, -4, 4, 11, -4, 4, 4, -11,
+            -11, -4, -4, -4, -11, -4, -4, -4, -11,
+            11, -4, -4, 4, -11, -4, 4, -4, -11,
     };
 
     //Gradients for 4D. They approximate the directions to the
     //vertices of a disprismatotesseractihexadecachoron from the center,
     //skewed so that the tetrahedral and cubic facets can be inscribed inside
     //spheres of the same radius.
-    private static byte[] gradients4D = new byte[] {
-            3,  1,  1,  1,      1,  3,  1,  1,      1,  1,  3,  1,      1,  1,  1,  3,
-            -3,  1,  1,  1,     -1,  3,  1,  1,     -1,  1,  3,  1,     -1,  1,  1,  3,
-            3, -1,  1,  1,      1, -3,  1,  1,      1, -1,  3,  1,      1, -1,  1,  3,
-            -3, -1,  1,  1,     -1, -3,  1,  1,     -1, -1,  3,  1,     -1, -1,  1,  3,
-            3,  1, -1,  1,      1,  3, -1,  1,      1,  1, -3,  1,      1,  1, -1,  3,
-            -3,  1, -1,  1,     -1,  3, -1,  1,     -1,  1, -3,  1,     -1,  1, -1,  3,
-            3, -1, -1,  1,      1, -3, -1,  1,      1, -1, -3,  1,      1, -1, -1,  3,
-            -3, -1, -1,  1,     -1, -3, -1,  1,     -1, -1, -3,  1,     -1, -1, -1,  3,
-            3,  1,  1, -1,      1,  3,  1, -1,      1,  1,  3, -1,      1,  1,  1, -3,
-            -3,  1,  1, -1,     -1,  3,  1, -1,     -1,  1,  3, -1,     -1,  1,  1, -3,
-            3, -1,  1, -1,      1, -3,  1, -1,      1, -1,  3, -1,      1, -1,  1, -3,
-            -3, -1,  1, -1,     -1, -3,  1, -1,     -1, -1,  3, -1,     -1, -1,  1, -3,
-            3,  1, -1, -1,      1,  3, -1, -1,      1,  1, -3, -1,      1,  1, -1, -3,
-            -3,  1, -1, -1,     -1,  3, -1, -1,     -1,  1, -3, -1,     -1,  1, -1, -3,
-            3, -1, -1, -1,      1, -3, -1, -1,      1, -1, -3, -1,      1, -1, -1, -3,
-            -3, -1, -1, -1,     -1, -3, -1, -1,     -1, -1, -3, -1,     -1, -1, -1, -3,
+    private static byte[] gradients4D = new byte[]{
+            3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3,
+            -3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3,
+            3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3,
+            -3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3,
+            3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3, 1, 1, 1, -1, 3,
+            -3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3,
+            3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3, 1, 1, -1, -1, 3,
+            -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3,
+            3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3, -1, 1, 1, 1, -3,
+            -3, 1, 1, -1, -1, 3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3,
+            3, -1, 1, -1, 1, -3, 1, -1, 1, -1, 3, -1, 1, -1, 1, -3,
+            -3, -1, 1, -1, -1, -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3,
+            3, 1, -1, -1, 1, 3, -1, -1, 1, 1, -3, -1, 1, 1, -1, -3,
+            -3, 1, -1, -1, -1, 3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3,
+            3, -1, -1, -1, 1, -3, -1, -1, 1, -1, -3, -1, 1, -1, -1, -3,
+            -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3,
     };
 }
