@@ -17,7 +17,7 @@ public class ColorPalette {
     }
 
     public void generate() {
-        colors = ColorGenerator.generate(20, 2);
+        colors = ColorGenerator.generate(40, 2);
     }
 
 
