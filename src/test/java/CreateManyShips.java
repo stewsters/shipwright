@@ -13,21 +13,28 @@ public class CreateManyShips {
 
     @Test
     public void createManyShips() throws IOException {
-
         Blueprint blueprint = new Blueprint();
-//        blueprint.spec = ImageIO.read(new File("spec/fighter.png"));
         blueprint.symmetrical = true;
         blueprint.height = 32;
         blueprint.width = 32;
-        blueprint.colorPalette = new ColorPalette();
 
+        ColorPalette totalColors = new ColorPalette();
+        totalColors.generate();
 
-        for(int i = 0; i < 10; i++){
-            BufferedImage output = ShipWright.generate(blueprint);
-            ImageIO.write(output, "png", new File("output/" + i + ".png") );
+        File dir = new File("input");
+        for (File file : dir.listFiles()) {
+            if (!file.getName().endsWith(".png"))
+                continue;
+
+            blueprint.spec = ImageIO.read(file);
+
+            for (int i = 0; i < 10; i++) {
+                blueprint.colorPalette = totalColors.sub();
+                BufferedImage output = ShipWright.generate(blueprint);
+                ImageIO.write(output, "png", new File("output/" + file.getName().split("\\.")[0] + i + ".png"));
+            }
+
         }
-
-
 
     }
 
