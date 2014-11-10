@@ -15,8 +15,8 @@ public class CreateManyShips {
     public void createManyShips() throws IOException {
         Blueprint blueprint = new Blueprint();
         blueprint.symmetrical = true;
-        blueprint.height = 32;
-        blueprint.width = 32;
+        blueprint.height = 256;
+        blueprint.width = 256;
 
         ColorPalette totalColors = new ColorPalette();
         totalColors.generate();

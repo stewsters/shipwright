@@ -16,6 +16,8 @@ public class ShipWright {
         // This seems to lose a lot of detail if you get too far away from the center.
         OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise();
 
+        NoiseGenerator noiseGenerator = new NoiseGenerator();
+
         Random r = new Random();
         int xColorOffset = r.nextInt(200) - 100;
         int yColorOffset = r.nextInt(200) - 100;
@@ -24,23 +26,24 @@ public class ShipWright {
         int xStructureOffset = r.nextInt(200) - 100;
         int yStructureOffset = r.nextInt(200) - 100;
 
+
         for (int x = 0; x < output.getWidth() / 2; x++) {
             for (int y = 0; y < output.getHeight(); y++) {
 
+                int specRGB = blueprint.spec.getRGB(
+                        (int) (((float) x / (float) output.getWidth()) * blueprint.spec.getWidth()),
+                        (int) (((float) y / (float) output.getHeight()) * blueprint.spec.getHeight()));
 
-                boolean showHere = blueprint.spec.getRGB(x, y) == Color.BLACK.getRGB();
+                boolean showHere = specRGB == Color.BLACK.getRGB();
 
-
-                showHere |= blueprint.spec.getRGB(x, y) == Color.WHITE.getRGB() &&
-                        (openSimplexNoise.eval((x + xStructureOffset) / 10f, (y + yStructureOffset) / 10f) > 0);
+                showHere |= specRGB == Color.WHITE.getRGB() &&
+                        (openSimplexNoise.eval((x + xStructureOffset) * (10f / blueprint.width), (y + yStructureOffset) * (10f / blueprint.height)) > 0);
 
                 Color color;
                 if (showHere) {
 
-                    int index = (int) (blueprint.colorPalette.colors.size() * (openSimplexNoise.eval((x + xColorOffset) / 10f, (y + yColorOffset) / 10f) + 1) / 2.0);
-
+                    int index = (int) (blueprint.colorPalette.colors.size() * (openSimplexNoise.eval((x + xColorOffset) * (10f / blueprint.width), (y + yColorOffset)  * (10f / blueprint.height)) + 1) / 2.0);
                     color = blueprint.colorPalette.colors.get(index);
-
 
                 } else {
                     color = transparent;
@@ -55,6 +58,5 @@ public class ShipWright {
         return output;
 
     }
-
 
 }
