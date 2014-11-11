@@ -1,4 +1,4 @@
-package com.stewsters.shipwright;
+package com.stewsters.shipwright.color;
 
 
 import java.awt.*;

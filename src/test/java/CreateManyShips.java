@@ -1,5 +1,5 @@
 import com.stewsters.shipwright.Blueprint;
-import com.stewsters.shipwright.ColorPalette;
+import com.stewsters.shipwright.color.ColorPalette;
 import com.stewsters.shipwright.ShipWright;
 import org.junit.Test;
 

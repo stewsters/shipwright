@@ -1,6 +1,9 @@
 package com.stewsters.shipwright;
 
 
+import com.stewsters.shipwright.noise.NoiseGenerator;
+import com.stewsters.shipwright.noise.OpenSimplexNoise;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -13,10 +16,6 @@ public class ShipWright {
 
         BufferedImage output = new BufferedImage(blueprint.width, blueprint.height, BufferedImage.TYPE_INT_ARGB);
 
-        // This seems to lose a lot of detail if you get too far away from the center.
-        OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise();
-
-        NoiseGenerator noiseGenerator = new NoiseGenerator();
 
         Random r = new Random();
         int xColorOffset = r.nextInt(200) - 100;
@@ -25,6 +24,9 @@ public class ShipWright {
 
         int xStructureOffset = r.nextInt(200) - 100;
         int yStructureOffset = r.nextInt(200) - 100;
+
+        // This seems to lose a lot of detail if you get too far away from the center.
+        OpenSimplexNoise openSimplexNoise = new OpenSimplexNoise();
 
 
         for (int x = 0; x < output.getWidth() / 2; x++) {

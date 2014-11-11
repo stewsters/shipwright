@@ -1,5 +1,7 @@
-package com.stewsters.shipwright;
+package com.stewsters.shipwright.noise;
 
+
+import com.stewsters.shipwright.noise.OpenSimplexNoise;
 
 public class NoiseGenerator {
     OpenSimplexNoise openSimplexNoise;

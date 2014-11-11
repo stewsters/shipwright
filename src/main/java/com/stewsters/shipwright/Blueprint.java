@@ -1,5 +1,7 @@
 package com.stewsters.shipwright;
 
+import com.stewsters.shipwright.color.ColorPalette;
+
 import java.awt.image.BufferedImage;
 
 public class Blueprint {
