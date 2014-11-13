@@ -3,15 +3,21 @@ package com.stewsters.shipwright.internals;
 
 public class GridMap {
 
-    public TileType[][] map;
+    private TileType[][] map;
+    private int width;
+    private int height;
 
 
     public GridMap(int xSize, int ySize) {
-        map = new TileType[xSize][ySize];
+
+        width = xSize;
+        height = ySize;
+
+        map = new TileType[width][height];
 
 
-        for (int x = 0; x < xSize; x++) {
-            for (int y = 0; y < ySize; y++) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
                 map[x][y] = TileType.AETHER;
             }
         }
@@ -23,27 +29,32 @@ public class GridMap {
     public void writeToBothSides(int x, int y, TileType tileType) {
 
         map[x][y] = tileType;
-        map[map.length - 1 - x][y] = tileType;
+        map[width - 1 - x][y] = tileType;
 
     }
 
     public boolean testBothSides(int x, int y, TileType tileType) {
 
-        return map[x][y] == tileType && map[map.length - 1 - x][y] == tileType;
+        return map[x][y] == tileType &&
+            map[width - 1 - x][y] == tileType;
     }
 
-    public void writeRoom(int xLow, int yLow, int xHigh, int yHigh, TileType tileType) {
+    public void writeRoom(int xLow, int yLow, int xHigh, int yHigh, TileType floorType, TileType wallType) {
 
         for (int x = xLow; x <= xHigh; x++) {
             for (int y = yLow; y <= yHigh; y++) {
-                writeToBothSides(x, y, tileType);
+                if (x == xLow || y == yLow || x == xHigh || y == yHigh) {
+                    writeToBothSides(x, y, wallType);
+                } else {
+                    writeToBothSides(x, y, floorType);
+                }
             }
         }
     }
 
     public boolean testRoom(int xLow, int yLow, int xHigh, int yHigh, TileType tileType) {
 
-        if (xLow < 0 || yLow < 0 || xHigh >= map.length / 2 || yHigh >= map[0].length)
+        if (xLow < 0 || yLow < 0 || xHigh >= width / 2 || yHigh >= height)
             return false;
 
         for (int x = xLow; x <= xHigh; x++) {
@@ -60,4 +71,15 @@ public class GridMap {
         return true;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public TileType getTile(int x, int y) {
+        return map[x][y];
+    }
 }

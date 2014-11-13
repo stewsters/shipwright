@@ -22,17 +22,79 @@ public class ShipWrightInterior {
         BufferedImage output = new BufferedImage(blueprint.width, blueprint.height, BufferedImage.TYPE_INT_ARGB);
         GridMap gridMap = new GridMap(blueprint.width, blueprint.height);
 
-        //Generate rooms
-        for (int i = 0; i < 10; i++) {
 
-            int x = r.nextInt(gridMap.map.length / 2);
-            int y = r.nextInt(gridMap.map[0].length);
+        // Generate underlying structure;
+        int xStructureOffset = r.nextInt(200) - 100;
+        int yStructureOffset = r.nextInt(200) - 100;
+        for (int x = 0; x < gridMap.getWidth() / 2; x++) {
+            for (int y = 0; y < gridMap.getHeight(); y++) {
 
-            int roomX = r.nextInt(5) + 3;
-            int roomY = r.nextInt(5) + 3;
+                int specRGB = blueprint.spec.getRGB(
+                    (int) (((float) x / (float) output.getWidth()) * blueprint.spec.getWidth()),
+                    (int) (((float) y / (float) output.getHeight()) * blueprint.spec.getHeight()));
 
-            if (gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.AETHER)) {
-                gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR);
+                boolean showHere = specRGB == Color.BLACK.getRGB();
+
+                showHere |= specRGB == Color.WHITE.getRGB() &&
+                    (openSimplexNoise.eval((x + xStructureOffset) * (10f / blueprint.width), (y + yStructureOffset) * (10f / blueprint.height)) > 0);
+
+                if (showHere)
+                    gridMap.writeToBothSides(x,y,TileType.INTERNALS);
+            }
+        }
+
+
+        //Generate rooms in underlying structure
+        for (int i = 0; i < 100; i++) {
+
+            int roomX = r.nextInt(8) + 6;
+            int roomY = r.nextInt(8) + 6; // actual room size will be 2 smaller, as we need walls
+
+            int x = r.nextInt(gridMap.getWidth() / 2 - roomX);
+            int y = r.nextInt(gridMap.getHeight() - roomY);
+
+
+            boolean primed = false; // we have seen a valid spot for a room.
+            boolean placed = false; // we have placed the room
+
+            // we need to move in until we are over valid terrain
+            // move x in
+            while (!placed) {
+                x++;
+                boolean valid = gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS);
+                if (valid) {
+                    primed = true;
+                } else if (primed) {
+                    //then we are no longer valid.  rewind.
+                    placed = true;
+                    x--;
+                }
+
+                if (x >= gridMap.getWidth())
+                    break;
+            }
+
+            primed = false;
+            placed = false;
+            // move Y in
+            while (!placed) {
+                y++;
+
+                boolean valid = gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS);
+                if (valid) {
+                    primed = true;
+                } else if (primed) {
+                    //then we are no longer valid.  rewind.
+                    placed = true;
+                    y--;
+                }
+
+                if (y >= gridMap.getHeight())
+                    break;
+            }
+
+            if (gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS)) {
+                gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR, TileType.WALL);
             }
         }
 
@@ -40,34 +102,24 @@ public class ShipWrightInterior {
         int xColorOffset = r.nextInt(200) - 100;
         int yColorOffset = r.nextInt(200) - 100;
 
-        int xStructureOffset = r.nextInt(200) - 100;
-        int yStructureOffset = r.nextInt(200) - 100;
+
+        //Print
 
         for (int x = 0; x < output.getWidth() / 2; x++) {
             for (int y = 0; y < output.getHeight(); y++) {
 
                 Color color;
 
-                if (!gridMap.map[x][y].equals(TileType.AETHER) && !gridMap.map[x][y].equals(TileType.VACUUM)) {
-                    color = gridMap.map[x][y].color;
+                if (gridMap.getTile(x,y) == TileType.INTERNALS) {
+
+                    int index = (int) (blueprint.colorPalette.colors.size() * (openSimplexNoise.eval((x + xColorOffset) * (10f / blueprint.width), (y + yColorOffset) * (10f / blueprint.height)) + 1) / 2.0);
+                    color = blueprint.colorPalette.colors.get(index);
+
+                } else if (!gridMap.getTile(x,y).equals(TileType.AETHER) && !gridMap.getTile(x,y).equals(TileType.VACUUM)) {
+                    color = gridMap.getTile(x,y).color;
                 } else {
-                    int specRGB = blueprint.spec.getRGB(
-                        (int) (((float) x / (float) output.getWidth()) * blueprint.spec.getWidth()),
-                        (int) (((float) y / (float) output.getHeight()) * blueprint.spec.getHeight()));
 
-                    boolean showHere = specRGB == Color.BLACK.getRGB();
-
-                    showHere |= specRGB == Color.WHITE.getRGB() &&
-                        (openSimplexNoise.eval((x + xStructureOffset) * (10f / blueprint.width), (y + yStructureOffset) * (10f / blueprint.height)) > 0);
-
-                    if (showHere) {
-
-                        int index = (int) (blueprint.colorPalette.colors.size() * (openSimplexNoise.eval((x + xColorOffset) * (10f / blueprint.width), (y + yColorOffset) * (10f / blueprint.height)) + 1) / 2.0);
-                        color = blueprint.colorPalette.colors.get(index);
-
-                    } else {
-                        color = transparent;
-                    }
+                    color = transparent;
 
                 }
 
