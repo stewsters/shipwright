@@ -4,6 +4,7 @@ package com.stewsters.shipwright.internals;
 public class GridMap {
 
     private TileType[][] map;
+    private boolean[][] partOfShip;
     private int width;
     private int height;
 
@@ -14,11 +15,12 @@ public class GridMap {
         height = ySize;
 
         map = new TileType[width][height];
-
+        partOfShip = new boolean[width][height];
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 map[x][y] = TileType.AETHER;
+                partOfShip[x][y] = false;
             }
         }
 
@@ -81,5 +83,52 @@ public class GridMap {
 
     public TileType getTile(int x, int y) {
         return map[x][y];
+    }
+
+
+    public void trimNonContiguous(int xStart, int yStart) {
+
+        partOfShip[xStart][yStart] = true;
+
+        // expand
+        int added = 1;
+
+        while (added > 0) {
+            added = 0;
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    if (map[x][y] == TileType.INTERNALS && partOfShip[x][y] == false) {
+
+                        if (isPartOfShip(x + 1, y) ||
+                            isPartOfShip(x - 1, y) ||
+                            isPartOfShip(x, y + 1) ||
+                            isPartOfShip(x, y - 1)) {
+                            partOfShip[x][y] = true;
+                            added++;
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (!partOfShip[x][y])
+                    map[x][y] = TileType.AETHER;
+            }
+        }
+
+    }
+
+
+    // Tests a location to see if its already part
+    private boolean isPartOfShip(int x, int y) {
+        if (x < 0 || y < 0 || x >= width || y >= height)
+            return false;
+        return partOfShip[x][y];
+
     }
 }
