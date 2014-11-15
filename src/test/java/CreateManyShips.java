@@ -1,5 +1,6 @@
 import com.stewsters.shipwright.Blueprint;
 import com.stewsters.shipwright.ShipWright;
+import com.stewsters.shipwright.Spacecraft;
 import com.stewsters.shipwright.color.ColorPalette;
 import org.junit.Test;
 
@@ -14,7 +15,6 @@ public class CreateManyShips {
     @Test
     public void createManyShipsWithInteriors() throws IOException {
         Blueprint blueprint = new Blueprint();
-        blueprint.symmetrical = true;
         blueprint.height = 256;
         blueprint.width = 256;
 
@@ -30,8 +30,9 @@ public class CreateManyShips {
 
             for (int i = 0; i < 10; i++) {
                 blueprint.colorPalette = totalColors.sub();
-                BufferedImage output = ShipWright.generate(blueprint);
-                ImageIO.write(output, "png", new File("output/interior/" + file.getName().split("\\.")[0] + i + ".png"));
+                Spacecraft spacecraft =ShipWright.generate(blueprint);
+
+                ImageIO.write(spacecraft.output, "png", new File("output/interior/" + file.getName().split("\\.")[0] + i + ".png"));
             }
 
         }
