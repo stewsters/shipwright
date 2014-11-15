@@ -28,7 +28,7 @@ public class ShipWright {
         spacecraft.gridMap = new GridMap(blueprint.width, blueprint.height);
 
         generateUnderlyingStructure(blueprint, spacecraft);
-
+        generateRooms(blueprint, spacecraft);
         paintShip(blueprint, spacecraft);
 
         return spacecraft;
@@ -75,11 +75,69 @@ public class ShipWright {
         spacecraft.gridMap.trimNonContiguous(blackX, blackY);
     }
 
+    private static Spacecraft generateRooms(Blueprint blueprint, Spacecraft spacecraft) {
+        //Generate rooms in underlying structure
+        for (int i = 0; i < 100; i++) {
+
+            //We start with large rooms (11-20) then work our way down to smaller closets
+            int roomX = r.nextInt(10) + ((100 - i) / 10) + 2;
+            int roomY = r.nextInt(10) + ((100 - i) / 10) + 2; // actual room size will be 2 smaller, as we need walls
+
+            int x = r.nextInt(spacecraft.gridMap.getWidth() / 2 - roomX);
+            int y = r.nextInt(spacecraft.gridMap.getHeight() - roomY);
+
+
+            boolean primed = false; // we have seen a valid spot for a room.
+            boolean placed = false; // we have placed the room
+
+            // we need to move in until we are over valid terrain
+            // move x in
+            while (!placed) {
+                x++;
+                boolean valid = spacecraft.gridMap.testRoom(x - 1, y - 1, x + roomX + 1, y + roomY + 1, TileType.INTERNALS);
+                if (valid) {
+                    primed = true;
+                } else if (primed) {
+                    //then we are no longer valid.  rewind.
+                    placed = true;
+                    x--;
+                }
+
+                if (x >= spacecraft.gridMap.getWidth())
+                    break;
+            }
+
+            primed = false;
+            placed = false;
+            // move Y in
+            while (!placed) {
+                y++;
+
+                boolean valid = spacecraft.gridMap.testRoom(x - 1, y - 1, x + roomX + 1, y + roomY + 1, TileType.INTERNALS);
+                if (valid) {
+                    primed = true;
+                } else if (primed) {
+                    //then we are no longer valid.  rewind.
+                    placed = true;
+                    y--;
+                }
+
+                if (y >= spacecraft.gridMap.getHeight())
+                    break;
+            }
+
+            if (spacecraft.gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS)) {
+                spacecraft.gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR, TileType.WALL);
+            }
+        }
+        return spacecraft;
+    }
+
     private static Spacecraft paintShip(Blueprint blueprint, Spacecraft spacecraft) {
         int xColorOffset = r.nextInt(200) - 100;
         int yColorOffset = r.nextInt(200) - 100;
 
-       spacecraft.output =  new BufferedImage(blueprint.width, blueprint.height, BufferedImage.TYPE_INT_ARGB);
+        spacecraft.output = new BufferedImage(blueprint.width, blueprint.height, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < spacecraft.output.getWidth() / 2; x++) {
             for (int y = 0; y < spacecraft.output.getHeight(); y++) {
 
