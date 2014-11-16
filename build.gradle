@@ -5,8 +5,10 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     testCompile 'junit:junit:4.11'
+    compile "com.stewsters.util:stewsters-util:0.9"
 }

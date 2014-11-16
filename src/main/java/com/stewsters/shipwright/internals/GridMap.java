@@ -1,7 +1,11 @@
 package com.stewsters.shipwright.internals;
 
 
-public class GridMap {
+import com.stewsters.util.pathing.twoDimention.shared.Mover2d;
+import com.stewsters.util.pathing.twoDimention.shared.PathNode2d;
+import com.stewsters.util.pathing.twoDimention.shared.TileBasedMap2d;
+
+public class GridMap implements TileBasedMap2d {
 
     private TileType[][] map;
     private boolean[][] partOfShip;
@@ -81,6 +85,17 @@ public class GridMap {
         return height;
     }
 
+    @Override
+    public int getWidthInTiles() {
+        return width;
+    }
+
+    @Override
+    public int getHeightInTiles() {
+        return height;
+    }
+
+
     public TileType getTile(int x, int y) {
         return map[x][y];
     }
@@ -130,5 +145,27 @@ public class GridMap {
             return false;
         return partOfShip[x][y];
 
+    }
+
+
+    @Override
+    public void pathFinderVisited(int x, int y) {
+
+    }
+
+    @Override
+    public boolean isBlocked(Mover2d mover, PathNode2d pathNode) {
+        return false;
+    }
+
+    @Override
+    public boolean isBlocked(Mover2d mover, int x1, int y1) {
+        return false;
+    }
+
+    @Override
+    public float getCost(Mover2d mover, int sx, int sy, int tx, int ty) {
+
+        return 0;
     }
 }

@@ -4,9 +4,14 @@ package com.stewsters.shipwright;
 import com.stewsters.shipwright.internals.GridMap;
 import com.stewsters.shipwright.internals.TileType;
 import com.stewsters.shipwright.noise.OpenSimplexNoise;
+import com.stewsters.shipwright.pathfind.HallwayMover2d;
+import com.stewsters.shipwright.pathfind.HallwayPathFinder;
+import com.stewsters.util.math.Point2i;
+import com.stewsters.util.pathing.twoDimention.shared.FullPath2d;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ShipWright {
@@ -29,6 +34,7 @@ public class ShipWright {
 
         generateUnderlyingStructure(blueprint, spacecraft);
         generateRooms(blueprint, spacecraft);
+        generateHallways(blueprint, spacecraft);
         paintShip(blueprint, spacecraft);
 
         return spacecraft;
@@ -76,6 +82,9 @@ public class ShipWright {
     }
 
     private static Spacecraft generateRooms(Blueprint blueprint, Spacecraft spacecraft) {
+
+        spacecraft.rooms = new ArrayList<>();
+
         //Generate rooms in underlying structure
         for (int i = 0; i < 100; i++) {
 
@@ -127,9 +136,41 @@ public class ShipWright {
             }
 
             if (spacecraft.gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS)) {
+                spacecraft.rooms.add(new Room(x, y, x + roomX, y + roomY));
                 spacecraft.gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR, TileType.WALL);
             }
         }
+        return spacecraft;
+    }
+
+    private static Spacecraft generateHallways(Blueprint blueprint, Spacecraft spacecraft) {
+
+        // Cutting paths
+        HallwayPathFinder pathFinder2d = new HallwayPathFinder(spacecraft.gridMap, spacecraft.gridMap.getWidthInTiles() * spacecraft.gridMap.getHeightInTiles(), false);
+        HallwayMover2d hallwayMover2d = new HallwayMover2d(spacecraft.gridMap);
+
+        // for each pair of room centers
+        for (Room roomFrom : spacecraft.rooms) {
+            for (Room roomTo : spacecraft.rooms) {
+
+                Point2i roomCenterFrom = roomFrom.center();
+                Point2i roomCenterTo = roomTo.center();
+
+                FullPath2d fullPath2d = pathFinder2d.findPath(hallwayMover2d, roomCenterFrom.x, roomCenterFrom.y, roomCenterTo.x, roomCenterTo.y);
+
+                if (fullPath2d != null) {
+                    for (int step = 0; step < fullPath2d.getLength(); step++) {
+                        TileType tileType = spacecraft.gridMap.getTile(fullPath2d.getX(step), fullPath2d.getY(step));
+
+                        if(tileType != TileType.DOOR){
+                            spacecraft.gridMap.writeToBothSides(fullPath2d.getX(step), fullPath2d.getY(step), TileType.FLOOR);
+                        }
+
+                    }
+                }
+            }
+        }
+
         return spacecraft;
     }
 
