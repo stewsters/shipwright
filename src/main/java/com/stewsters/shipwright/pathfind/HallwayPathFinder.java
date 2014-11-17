@@ -16,13 +16,17 @@ public class HallwayPathFinder extends AStarPathFinder2d {
 
     @Override
     protected boolean isBlocked(Mover2d mover, int x, int y) {
-        // We want to be able to tunnel through ways to create hallways.
-        return false;
+        // We want to be able to tunnel through ways to create hallways
+
+        if (gridMap.getTile(x, y) == TileType.AETHER || gridMap.getTile(x, y) == TileType.VACUUM)
+            return true;
+        else
+            return false;
     }
 
     @Override
     public float getMovementCost(Mover2d mover, int sx, int sy, int tx, int ty) {
-        TileType tileType = gridMap.getTile(tx,ty);
+        TileType tileType = gridMap.getTile(tx, ty);
         return tileType.digTunnelCost;
     }
 }

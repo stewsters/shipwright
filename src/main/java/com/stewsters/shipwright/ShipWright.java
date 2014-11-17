@@ -55,8 +55,8 @@ public class ShipWright {
         // Generate underlying structure;
         int xStructureOffset = r.nextInt(200) - 100;
         int yStructureOffset = r.nextInt(200) - 100;
-        for (int x = 0; x < spacecraft.gridMap.getWidth() / 2; x++) {
-            for (int y = 0; y < spacecraft.gridMap.getHeight(); y++) {
+        for (int x = 0; x < spacecraft.gridMap.getWidthInTiles() / 2; x++) {
+            for (int y = 0; y < spacecraft.gridMap.getHeightInTiles(); y++) {
 
                 int specRGB = blueprint.spec.getRGB(
                     (int) (((float) x / (float) blueprint.width) * blueprint.spec.getWidth()),
@@ -92,8 +92,8 @@ public class ShipWright {
             int roomX = r.nextInt(10) + ((100 - i) / 10) + 2;
             int roomY = r.nextInt(10) + ((100 - i) / 10) + 2; // actual room size will be 2 smaller, as we need walls
 
-            int x = r.nextInt(spacecraft.gridMap.getWidth() / 2 - roomX);
-            int y = r.nextInt(spacecraft.gridMap.getHeight() - roomY);
+            int x = r.nextInt(spacecraft.gridMap.getWidthInTiles() / 2 - roomX);
+            int y = r.nextInt(spacecraft.gridMap.getHeightInTiles() - roomY);
 
 
             boolean primed = false; // we have seen a valid spot for a room.
@@ -112,7 +112,7 @@ public class ShipWright {
                     x--;
                 }
 
-                if (x >= spacecraft.gridMap.getWidth())
+                if (x >= spacecraft.gridMap.getWidthInTiles())
                     break;
             }
 
@@ -131,7 +131,7 @@ public class ShipWright {
                     y--;
                 }
 
-                if (y >= spacecraft.gridMap.getHeight())
+                if (y >= spacecraft.gridMap.getHeightInTiles())
                     break;
             }
 
@@ -162,7 +162,7 @@ public class ShipWright {
                     for (int step = 0; step < fullPath2d.getLength(); step++) {
                         TileType tileType = spacecraft.gridMap.getTile(fullPath2d.getX(step), fullPath2d.getY(step));
 
-                        if(tileType != TileType.DOOR){
+                        if (tileType != TileType.DOOR) {
                             spacecraft.gridMap.writeToBothSides(fullPath2d.getX(step), fullPath2d.getY(step), TileType.FLOOR);
                         }
 

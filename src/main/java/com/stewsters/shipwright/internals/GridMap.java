@@ -77,13 +77,6 @@ public class GridMap implements TileBasedMap2d {
         return true;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
 
     @Override
     public int getWidthInTiles() {
