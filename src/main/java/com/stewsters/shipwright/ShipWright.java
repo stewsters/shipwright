@@ -146,8 +146,9 @@ public class ShipWright {
                 spacecraft.rooms.add(new Room(x, y, x + roomX, y + roomY));
                 spacecraft.rooms.add(new Room(
                     spacecraft.gridMap.getWidthInTiles() - (x + roomX) - 1,
-                    spacecraft.gridMap.getHeightInTiles() - (y + roomY) - 1,
-                    spacecraft.gridMap.getWidthInTiles() - x - 1, spacecraft.gridMap.getWidthInTiles() - y - 1));
+                    y,
+                    spacecraft.gridMap.getWidthInTiles() - x - 1,
+                    y + roomY));
 
                 spacecraft.gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR, TileType.WALL);
             }
@@ -174,7 +175,10 @@ public class ShipWright {
                     for (int step = 0; step < fullPath2d.getLength(); step++) {
                         TileType tileType = spacecraft.gridMap.getTile(fullPath2d.getX(step), fullPath2d.getY(step));
 
-                        if (tileType != TileType.DOOR) {
+
+                        if (tileType == TileType.WALL || tileType == TileType.REINFORCED_WALL) {
+                            spacecraft.gridMap.writeToBothSides(fullPath2d.getX(step), fullPath2d.getY(step), TileType.DOOR);
+                        } else if (tileType != TileType.DOOR) {
                             spacecraft.gridMap.writeToBothSides(fullPath2d.getX(step), fullPath2d.getY(step), TileType.FLOOR);
                         }
 
@@ -196,7 +200,7 @@ public class ShipWright {
 //        // Any interior pockets should be internals
 //        MapGen2d.fill(spacecraft.gridMap, new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.INTERNALS));
 
-        MapGen2d.fill(spacecraft.gridMap,  new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.VACUUM));
+        MapGen2d.fill(spacecraft.gridMap, new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.VACUUM));
 
         //surround any external halls with wall
         MapGen2d.fill(spacecraft.gridMap,
@@ -212,7 +216,10 @@ public class ShipWright {
         MapGen2d.fill(spacecraft.gridMap,
             new AndPredicate2d(
                 new CellEquals2d(TileType.INTERNALS),
-                new CellNearCell2d(TileType.FLOOR)
+                new OrPredicate2d(
+                    new CellNearCell2d(TileType.FLOOR),
+                    new CellNearCell2d(TileType.DOOR))
+
             ),
             new DrawCell2d(TileType.WALL)
         );
