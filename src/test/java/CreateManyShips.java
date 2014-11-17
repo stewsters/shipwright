@@ -28,7 +28,7 @@ public class CreateManyShips {
 
             blueprint.spec = ImageIO.read(file);
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 4; i++) {
                 blueprint.colorPalette = totalColors.sub();
                 Spacecraft spacecraft =ShipWright.generate(blueprint);
 

@@ -6,6 +6,12 @@ import com.stewsters.shipwright.internals.TileType;
 import com.stewsters.shipwright.noise.OpenSimplexNoise;
 import com.stewsters.shipwright.pathfind.HallwayMover2d;
 import com.stewsters.shipwright.pathfind.HallwayPathFinder;
+import com.stewsters.util.mapgen.twoDimension.MapGen2d;
+import com.stewsters.util.mapgen.twoDimension.brush.DrawCell2d;
+import com.stewsters.util.mapgen.twoDimension.predicate.AndPredicate2d;
+import com.stewsters.util.mapgen.twoDimension.predicate.CellEquals2d;
+import com.stewsters.util.mapgen.twoDimension.predicate.CellNearCell2d;
+import com.stewsters.util.mapgen.twoDimension.predicate.OrPredicate2d;
 import com.stewsters.util.math.Point2i;
 import com.stewsters.util.pathing.twoDimention.shared.FullPath2d;
 
@@ -35,6 +41,7 @@ public class ShipWright {
         generateUnderlyingStructure(blueprint, spacecraft);
         generateRooms(blueprint, spacecraft);
         generateHallways(blueprint, spacecraft);
+        generateHallwayWalls(blueprint, spacecraft);
         paintShip(blueprint, spacecraft);
 
         return spacecraft;
@@ -137,6 +144,11 @@ public class ShipWright {
 
             if (spacecraft.gridMap.testRoom(x, y, x + roomX, y + roomY, TileType.INTERNALS)) {
                 spacecraft.rooms.add(new Room(x, y, x + roomX, y + roomY));
+                spacecraft.rooms.add(new Room(
+                    spacecraft.gridMap.getWidthInTiles() - (x + roomX) - 1,
+                    spacecraft.gridMap.getHeightInTiles() - (y + roomY) - 1,
+                    spacecraft.gridMap.getWidthInTiles() - x - 1, spacecraft.gridMap.getWidthInTiles() - y - 1));
+
                 spacecraft.gridMap.writeRoom(x, y, x + roomX, y + roomY, TileType.FLOOR, TileType.WALL);
             }
         }
@@ -173,6 +185,55 @@ public class ShipWright {
 
         return spacecraft;
     }
+
+    private static Spacecraft generateHallwayWalls(Blueprint blueprint, Spacecraft spacecraft) {
+
+        //flood fill the vacuum, everything else should be solid ship
+//        MapGen2d.floodFill(spacecraft.gridMap, new Point2i(0, 0), new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.VACUUM));
+
+//        MapGen2d.floodFill(spacecraft.gridMap, new Point2i(spacecraft.gridMap.getWidthInTiles() - 1, spacecraft.gridMap.getHeightInTiles() - 1), new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.VACUUM));
+
+//        // Any interior pockets should be internals
+//        MapGen2d.fill(spacecraft.gridMap, new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.INTERNALS));
+
+        MapGen2d.fill(spacecraft.gridMap,  new CellEquals2d(TileType.AETHER), new DrawCell2d(TileType.VACUUM));
+
+        //surround any external halls with wall
+        MapGen2d.fill(spacecraft.gridMap,
+            new AndPredicate2d(
+                new CellEquals2d(TileType.VACUUM),
+                new CellNearCell2d(TileType.FLOOR)
+            ),
+            new DrawCell2d(TileType.WALL)
+        );
+
+
+        //surround any halls with wall
+        MapGen2d.fill(spacecraft.gridMap,
+            new AndPredicate2d(
+                new CellEquals2d(TileType.INTERNALS),
+                new CellNearCell2d(TileType.FLOOR)
+            ),
+            new DrawCell2d(TileType.WALL)
+        );
+
+        // surround the ship with armor
+        MapGen2d.fill(spacecraft.gridMap,
+            new AndPredicate2d(
+                new CellEquals2d(TileType.VACUUM),
+
+                new OrPredicate2d(
+                    new CellNearCell2d(TileType.WALL),
+                    new CellNearCell2d(TileType.REINFORCED_WALL.WALL)
+                )
+
+            ),
+            new DrawCell2d(TileType.ARMOR)
+        );
+
+        return spacecraft;
+    }
+
 
     private static Spacecraft paintShip(Blueprint blueprint, Spacecraft spacecraft) {
         int xColorOffset = r.nextInt(200) - 100;

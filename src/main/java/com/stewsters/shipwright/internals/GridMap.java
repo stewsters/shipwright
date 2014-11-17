@@ -1,11 +1,13 @@
 package com.stewsters.shipwright.internals;
 
 
+import com.stewsters.util.mapgen.CellType;
+import com.stewsters.util.mapgen.twoDimension.GeneratedMap2d;
 import com.stewsters.util.pathing.twoDimention.shared.Mover2d;
 import com.stewsters.util.pathing.twoDimention.shared.PathNode2d;
 import com.stewsters.util.pathing.twoDimention.shared.TileBasedMap2d;
 
-public class GridMap implements TileBasedMap2d {
+public class GridMap implements TileBasedMap2d, GeneratedMap2d {
 
     private TileType[][] map;
     private boolean[][] partOfShip;
@@ -88,6 +90,25 @@ public class GridMap implements TileBasedMap2d {
         return height;
     }
 
+    @Override
+    public CellType getCellTypeAt(int x, int y) {
+        if (outsideMap(x, y)) {
+            return null;
+        }
+
+        return map[x][y];
+    }
+
+    @Override
+    public void setCellTypeAt(int x, int y, CellType cellType) {
+
+        map[x][y] = (TileType) cellType;
+    }
+
+
+    public boolean outsideMap(int x, int y) {
+        return (x < 0 || x >= width || y < 0 || y >= height);
+    }
 
     public TileType getTile(int x, int y) {
         return map[x][y];
