@@ -3,6 +3,8 @@
 
 A library to generate spaceships.
 
+[Example](http://imgur.com/8t5B2jM)
+
 I was originally going to make a FTL clone, but when I sat down to draw a ship, I realized I wont have the time this 
 week.  So I decided to make a tool to generate spaceships instead.
 
